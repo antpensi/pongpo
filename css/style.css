@@ -30,16 +30,18 @@ h1 {
 ul {
   margin: 30px auto;
   width: 336px;
-  border: 5px solid black;
+  border: 2px solid grey;
+	border-radius: 7px;
 }
 
 li {
   float: left;
   width: 40px;
   height: 40px;
-  border: 1px solid black;
+  border-radius: 7px;
   background-color: #ccc;
   cursor: pointer;
+	margin: 1px;
 }
 
 li:hover {
