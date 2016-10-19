@@ -1,10 +1,7 @@
-var path = require("path");
-
 module.exports = {
   context: __dirname,
   entry: "./lib/pongpo.js",
   output: {
-    path: path.join(__dirname, 'app', 'assets', 'javascripts'),
     filename: "bundle.js"
   },
   module: {
