@@ -82,9 +82,27 @@
 			_classCallCheck(this, Game);
 	
 			this.board = board;
+	
+			this.nextGameState = this.nextGameState.bind(this);
 		}
 	
 		_createClass(Game, [{
+			key: "start",
+			value: function start() {
+				// on interval tell the board to fill a random blank square
+				window.intervalId = setInterval(this.nextGameState, 250);
+			}
+		}, {
+			key: "nextGameState",
+			value: function nextGameState() {
+				if (this.board.isFullBoard()) {
+					console.log('game over');
+					clearInterval(window.intervalId);
+				} else {
+					this.board.fillRandomSquare();
+				}
+			}
+		}, {
 			key: "makeMove",
 			value: function makeMove($square) {
 				var pos = $square.data("pos");
@@ -121,7 +139,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -143,54 +161,49 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var View = function () {
-	  function View($el) {
-	    _classCallCheck(this, View);
+		function View($el) {
+			_classCallCheck(this, View);
 	
-	    this.$el = $el;
-	    this.board = new _board2.default();
-	    this.game = new _game2.default(this.board);
+			this.$el = $el;
+			this.board = new _board2.default();
+			this.game = new _game2.default(this.board);
 	
-	    this.setupBoard();
-	    this.bindEvents();
-	  }
+			this.drawBoard();
+			this.bindEvents();
+			this.game.start();
+		}
 	
-	  _createClass(View, [{
-	    key: 'bindEvents',
-	    value: function bindEvents() {
-	      var _this = this;
+		_createClass(View, [{
+			key: 'bindEvents',
+			value: function bindEvents() {
+				var _this = this;
 	
-	      // install a handler on the `li` elements inside the board.
-	      this.$el.on("click", "li", function (event) {
-	        var $square = $(event.currentTarget);
-	        _this.game.makeMove($square);
-	      });
-	    }
-	  }, {
-	    key: 'setupBoard',
-	    value: function setupBoard() {
-	      var grid = this.board.grid;
-	      var $ul = $("<ul>");
-	      $ul.addClass("group");
+				// install a handler on the `li` elements inside the board.
+				this.$el.on("click", "li", function (event) {
+					var $square = $(event.currentTarget);
+					_this.game.makeMove($square);
+				});
+			}
+		}, {
+			key: 'drawBoard',
+			value: function drawBoard() {
+				if ($('ul')) $('ul').remove();
 	
-	      for (var i = 0; i < grid.length; i++) {
-	        for (var j = 0; j < grid[i].length; j++) {
-	          $ul.append(grid[i][j].render());
-	        }
-	      }
+				var grid = this.board.grid;
+				var $ul = $("<ul>");
+				$ul.addClass("group");
 	
-	      // for (let rowIdx = 0; rowIdx < 8; rowIdx++) {
-	      //   for (let colIdx = 0; colIdx < 11; colIdx++) {
-	      //     let $square = new Square([rowIdx, colIdx]);
-	      //
-	      //     $ul.append($square.render());
-	      //   }
-	      // }
+				for (var i = 0; i < grid.length; i++) {
+					for (var j = 0; j < grid[i].length; j++) {
+						$ul.append(grid[i][j].render());
+					}
+				}
 	
-	      this.$el.append($ul);
-	    }
-	  }]);
+				this.$el.append($ul);
+			}
+		}]);
 	
-	  return View;
+		return View;
 	}();
 	
 	exports.default = View;
@@ -221,6 +234,9 @@
 	
 			this.grid = this.setupGrid();
 			this.deltas = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+	
+			this.fillRandomSquare = this.fillRandomSquare.bind(this);
+			this.isFullBoard = this.isFullBoard.bind(this);
 		}
 	
 		_createClass(Board, [{
@@ -243,6 +259,37 @@
 				return grid;
 			}
 		}, {
+			key: 'isFullBoard',
+			value: function isFullBoard() {
+				var full = true;
+				for (var i = 0; i < this.grid.length; i++) {
+					for (var j = 0; j < this.grid[i].length; j++) {
+						if (this.grid[i][j].blank) {
+							full = false;
+						}
+					}
+				}
+				return full;
+			}
+		}, {
+			key: 'fillRandomSquare',
+			value: function fillRandomSquare() {
+				var filled = false;
+				var randomX = getRandomIntInclusive(0, 10);
+				var randomY = getRandomIntInclusive(0, 7);
+	
+				while (!filled) {
+					if (this.grid[randomX][randomY].blank) {
+						var randomSquare = new _square2.default([randomX, randomY]);
+						this.grid[randomX][randomY] = randomSquare;
+						this.grid[randomX][randomY].fillSquare();
+						filled = true;
+					}
+					randomX = getRandomIntInclusive(0, 10);
+					randomY = getRandomIntInclusive(0, 7);
+				}
+			}
+		}, {
 			key: 'isValidMove',
 			value: function isValidMove(pos) {
 				if (this.grid[pos[0]][pos[1]].blank) {
@@ -254,13 +301,46 @@
 		}, {
 			key: 'handleMove',
 			value: function handleMove(pos) {
-				debugger;
-				var testSquare = this.nextSolidSquare(pos, this.deltas[0]);
+				var hitSquares = [];
+	
+				for (var i = 0; i < this.deltas.length; i++) {
+					hitSquares.push(this.nextSolidSquare(pos, this.deltas[i]));
+				}
+				var colorCount = this.sameColorSquares(hitSquares);
+				this.removeSameColorSquares(colorCount);
+			}
+		}, {
+			key: 'removeSameColorSquares',
+			value: function removeSameColorSquares(colorCount) {
+				var colors = Object.keys(colorCount);
+				// if a given color had 2 or more hits, make each of those squares blank
+				for (var i = 0; i < colors.length; i++) {
+					if (colorCount[colors[i]].length > 1) {
+						for (var j = 0; j < colorCount[colors[i]].length; j++) {
+							colorCount[colors[i]][j].makeBlank();
+						}
+					}
+				}
+			}
+		}, {
+			key: 'sameColorSquares',
+			value: function sameColorSquares(squares) {
+				var colorCount = {};
+				for (var i = 0; i < squares.length; i++) {
+					if (!squares[i]) continue;
+	
+					if (colorCount[squares[i].color]) {
+						colorCount[squares[i].color].push(squares[i]);
+					} else {
+						colorCount[squares[i].color] = [squares[i]];
+					}
+				}
+				return colorCount;
 			}
 		}, {
 			key: 'inBounds',
 			value: function inBounds(pos) {
-				if (pos[0] < 8 || pos[0] >= 0 || pos[1] < 11 || pos[1] >= 0) {
+				if (pos[0] < 11 && pos[0] >= 0 && pos[1] < 8 && pos[1] >= 0) {
 					return true;
 				} else {
 					return false;
@@ -272,7 +352,7 @@
 				var nextX = delta[0] + pos[0];
 				var nextY = delta[1] + pos[1];
 	
-				if (inBounds([nextX, nextY])) {
+				if (this.inBounds([nextX, nextY])) {
 					var target = this.grid[nextX][nextY];
 					return target;
 				} else {
@@ -282,17 +362,19 @@
 		}, {
 			key: 'nextSolidSquare',
 			value: function nextSolidSquare(pos, delta) {
-				var currentSquare = findAdjacentSquare(pos, delta);
+				var newDX = delta[0];
+				var newDY = delta[1];
+				var currentSquare = this.findAdjacentSquare(pos, delta);
 	
 				if (!currentSquare) return null; // findAdjacentSquare returns null if pos+delta was out of bounds
 	
 				// look one square further in delta's direction until square is not blank
 				while (currentSquare.blank) {
-					var newDX = delta[0] + delta[0];
-					var newDY = delta[1] + delta[1];
-					currentSquare = findAdjacentSquare(pos, [newDX, newDY]);
+					newDX += delta[0];
+					newDY += delta[1];
+					currentSquare = this.findAdjacentSquare(pos, [newDX, newDY]);
+					if (!currentSquare) return null;
 				}
-	
 				return currentSquare;
 			}
 		}]);
@@ -359,11 +441,39 @@
 				return colors[randomKey];
 			}
 		}, {
+			key: 'isFullBoard',
+			value: function isFullBoard() {
+				var full = true;
+				for (var i = 0; i < this.grid.length; i++) {
+					if (this.grid[i].blank) {
+						full = false;
+					}
+				}
+			}
+		}, {
+			key: 'fillSquare',
+			value: function fillSquare() {
+				var $li = $(document.getElementById(this.pos));
+				$li.css('background-color', 'rgb' + this.color);
+			}
+		}, {
+			key: 'makeBlank',
+			value: function makeBlank() {
+				this.blank = true;
+				var $li = $(document.getElementById(this.pos));
+				$li.css('background-color', 'rgb(226, 224, 225)');
+				$li.addClass('blank');
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var $li = $("<li>");
 				$li.css('background-color', 'rgb' + this.color);
+				if (this.blank) {
+					$li.addClass('blank');
+				}
 				$li.data("pos", this.pos);
+				$li.attr('id', this.pos);
 				return $li;
 			}
 		}]);
