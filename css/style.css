@@ -48,5 +48,21 @@ li:hover {
   background: white;
 }
 
-.blank {
+.controls-list > li {
+	float: left;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+}
+
+.restart {
+	background: #C70039;
+}
+
+.start {
+	background: #D2CFED;
+}
+
+.pause {
+	background: #581845;
 }
