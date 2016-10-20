@@ -28,7 +28,7 @@ h1 {
 }
 
 ul {
-  margin: 30px auto;
+  margin: 15px auto;
   width: 336px;
   border: 2px solid grey;
 	border-radius: 7px;
@@ -50,21 +50,34 @@ li {
   transform: scale(.85);
 }
 
+.controls-list {
+	border: none;
+	margin: 15px auto;
+}
+
 .controls-list > li {
 	float: left;
 	width: 30px;
 	height: 30px;
+	line-height: 30px;
 	cursor: pointer;
 }
 
+li > i {
+	vertical-align: middle;
+}
+
 .restart {
-	background: #C70039;
+	/*background: #C70039;*/
+	background: #fff;
 }
 
 .start {
-	background: #D2CFED;
+	/*background: #D2CFED;*/
+	background: #fff;
 }
 
 .pause {
-	background: #581845;
+	/*background: #581845;*/
+	background: #fff;
 }
