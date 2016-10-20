@@ -44,14 +44,16 @@ li {
 	margin: 1px;
 }
 
-li:hover {
-  background: white;
+.shrink:hover {
+	-webkit-transform: scale(.85);
+  -ms-transform: scale(.85);
+  transform: scale(.85);
 }
 
 .controls-list > li {
 	float: left;
-	width: 40px;
-	height: 40px;
+	width: 30px;
+	height: 30px;
 	cursor: pointer;
 }
 
