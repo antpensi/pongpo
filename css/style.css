@@ -81,3 +81,16 @@ li > i {
 	/*background: #581845;*/
 	background: #fff;
 }
+
+.time {
+	font-size: 16px;
+	margin: 5px;
+}
+.score {
+	font-size: 16px;
+	margin: 5px;
+}
+.paused {
+	font-size: 16px;
+	margin: 5px;
+}
