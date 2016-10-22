@@ -50,18 +50,17 @@
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	var _view = __webpack_require__(2);
+	var _board = __webpack_require__(3);
 	
-	var _view2 = _interopRequireDefault(_view);
+	var _board2 = _interopRequireDefault(_board);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	$(function () {
 	  var rootEl = $('.pongpo');
-	  new _view2.default(rootEl);
+	  var board = new _board2.default();
+	  new _game2.default(board, rootEl);
 	});
-	
-	// 29
 
 /***/ },
 /* 1 */
@@ -137,6 +136,9 @@
 			this.resetGame = this.resetGame.bind(this);
 			this.unbindEvents = this.unbindEvents.bind(this);
 			this.bindEvents = this.bindEvents.bind(this);
+	
+			this.drawNextStage();
+			this.start();
 		}
 	
 		_createClass(Game, [{
@@ -320,83 +322,7 @@
 	exports.default = Game;
 
 /***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _board = __webpack_require__(3);
-	
-	var _board2 = _interopRequireDefault(_board);
-	
-	var _square = __webpack_require__(4);
-	
-	var _square2 = _interopRequireDefault(_square);
-	
-	var _game = __webpack_require__(1);
-	
-	var _game2 = _interopRequireDefault(_game);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var View = function () {
-		function View($el) {
-			_classCallCheck(this, View);
-	
-			this.$el = $el;
-			this.board = new _board2.default();
-			this.game = new _game2.default(this.board, this.$el);
-	
-			this.drawBoard();
-			this.bindEvents();
-			this.game.start();
-		}
-	
-		_createClass(View, [{
-			key: 'bindEvents',
-			value: function bindEvents() {
-				var _this = this;
-	
-				// install a handler on the `li` elements inside the board.
-				this.$el.on("click", "li", function (event) {
-					var $square = $(event.currentTarget);
-					_this.game.makeMove($square);
-				});
-			}
-		}, {
-			key: 'drawBoard',
-			value: function drawBoard() {
-				if ($('.game-board')) $('.game-board').remove();
-	
-				var grid = this.board.grid;
-				var $ul = $("<ul>");
-				$ul.addClass("group");
-				$ul.addClass("game-board");
-	
-				for (var i = 0; i < grid.length; i++) {
-					for (var j = 0; j < grid[i].length; j++) {
-						$ul.append(grid[i][j].render());
-					}
-				}
-	
-				this.$el.append($ul);
-			}
-		}]);
-	
-		return View;
-	}();
-	
-	exports.default = View;
-
-/***/ },
+/* 2 */,
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
