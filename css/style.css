@@ -28,7 +28,7 @@ h1 {
 }
 
 ul {
-  margin: 30px auto;
+  margin: 15px auto;
   width: 336px;
   border: 2px solid grey;
 	border-radius: 7px;
@@ -44,9 +44,57 @@ li {
 	margin: 1px;
 }
 
-li:hover {
-  background: white;
+.shrink:hover {
+	-webkit-transform: scale(.85);
+  -ms-transform: scale(.85);
+  transform: scale(.85);
 }
 
-.blank {
+.controls-list {
+	border: none;
+	margin: 15px auto;
+}
+
+.controls-list > li {
+	float: left;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	cursor: pointer;
+}
+
+li > i {
+	vertical-align: middle;
+}
+
+.restart {
+	/*background: #C70039;*/
+	background: #fff;
+}
+
+.start {
+	/*background: #D2CFED;*/
+	background: #fff;
+}
+
+.pause {
+	/*background: #581845;*/
+	background: #fff;
+}
+
+.time {
+	font-size: 16px;
+	margin: 5px;
+}
+.scoreboard {
+	font-size: 16px;
+	margin: 5px;
+}
+.paused {
+	font-size: 16px;
+	margin: 5px;
+}
+.game-over {
+	font-size: 24px;
+	margin: 5px;
 }
