@@ -65,9 +65,9 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -75,54 +75,222 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
+	var _board = __webpack_require__(3);
+	
+	var _board2 = _interopRequireDefault(_board);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Game = function () {
-		function Game(board) {
+		function Game(board, $el) {
 			_classCallCheck(this, Game);
 	
+			this.$el = $el;
 			this.board = board;
+			this.stage = this.board.stage;
+			this.score = this.board.score;
+			this.scoreBoard = $('.scoreboard');
+			this.isPaused = true;
+			this.time = 0;
+			this.output = $('.time');
+			this.gameSpeedIndex = 1;
+			this.gameSpeeds = {
+				1: 3000,
+				2: 2750,
+				3: 2500,
+				4: 2250,
+				5: 2150,
+				6: 2000,
+				7: 1800,
+				8: 1600,
+				9: 1400,
+				10: 1200,
+				11: 1000,
+				12: 950,
+				13: 900,
+				14: 850,
+				15: 800,
+				16: 750,
+				17: 700,
+				18: 650,
+				19: 600,
+				20: 550,
+				21: 500,
+				22: 450,
+				23: 400,
+				24: 350,
+				25: 300,
+				26: 250,
+				27: 150,
+				28: 100,
+				29: 50,
+				30: 20
+			};
 	
+			this.start = this.start.bind(this);
+			this.makeInterval = this.makeInterval.bind(this);
 			this.nextGameState = this.nextGameState.bind(this);
+			this.nextStage = this.nextStage.bind(this);
+			this.drawNextStage = this.drawNextStage.bind(this);
+			this.resetGame = this.resetGame.bind(this);
 		}
 	
 		_createClass(Game, [{
-			key: "start",
+			key: 'start',
 			value: function start() {
+				var _this = this;
+	
 				// on interval tell the board to fill a random blank square
-				window.intervalId = setInterval(this.nextGameState, 250);
+				// window.intervalId = setInterval(this.nextGameState, 1000);
+				$('.pause').on('click', function (e) {
+					e.preventDefault();
+					_this.isPaused = true;
+				}).bind(this);
+	
+				$('.start').on('click', function (e) {
+					e.preventDefault();
+					_this.isPaused = false;
+				}).bind(this);
+	
+				$('.restart').on('click', function (e) {
+					e.preventDefault();
+					_this.resetGame();
+				}).bind(this);
+	
+				this.makeInterval();
+			}
+	
+			// makeInterval() {
+			// 	const that = this;
+			// 	window.intervalId = setInterval( () => {
+			// 		if (!this.isPaused) {
+			// 			that.time += this.gameSpeed[this.gameSpeedIndex] / 1000; // that.time should be time in seconds
+			//
+			// 			if (that.time % 5 === 0) { //increment speed if it's been 5 seconds
+			// 				clearInterval(window.intervalId);
+			// 				if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
+			// 				this.makeInterval();
+			// 			}
+			//
+			// 			that.output.text('Game Speed: ' + that.gameSpeedIndex);
+			// 			that.scoreBoard.text(`Score: ${that.board.score}`);
+			// 			$('.paused').text('Running');
+			// 			that.nextGameState();
+			// 		} else {
+			// 			$('.paused').text('Paused');
+			// 		}
+			// 	}, that.gameSpeeds[that.gameSpeedIndex]);
+			// }
+	
+		}, {
+			key: 'makeInterval',
+			value: function makeInterval() {
+				var _this2 = this;
+	
+				var that = this;
+				window.intervalId = setInterval(function () {
+					if (!_this2.isPaused) {
+						that.time += 20; // that.time should be time in milliseconds
+						if (that.time % that.gameSpeeds[that.gameSpeedIndex] === 0) {
+							that.nextGameState();
+						}
+	
+						if (that.time % 20000 === 0) {
+							//increment speed if it's been 20 seconds
+							if (that.gameSpeedIndex < 30) that.gameSpeedIndex += 1;
+						}
+	
+						that.output.text('Game Speed: ' + that.gameSpeedIndex);
+						that.scoreBoard.text('Score: ' + that.board.score);
+						$('.paused').text('Running');
+					} else {
+						$('.paused').text('Paused');
+					}
+				}, 20); // 50 refreshes a second
 			}
 		}, {
-			key: "nextGameState",
+			key: 'nextGameState',
 			value: function nextGameState() {
 				if (this.board.isFullBoard()) {
-					console.log('game over');
+					// console.log('game over');
+					$('.game-over').text('Game Over!');
 					clearInterval(window.intervalId);
 				} else {
 					this.board.fillRandomSquare();
 				}
 			}
 		}, {
-			key: "makeMove",
+			key: 'makeMove',
 			value: function makeMove($square) {
 				var pos = $square.data("pos");
-	
-				try {
-					this.playMove(pos);
-				} catch (e) {
-					// NB: What should I do when player makes invalid move?
-					// (i.e. clicks ON a square)
-					return;
-				}
+				this.playMove(pos);
 			}
 		}, {
-			key: "playMove",
+			key: 'nextStage',
+			value: function nextStage() {
+				clearInterval(window.intervalId);
+				this.board.updateStage();
+				var newGrid = this.board.setupGrid();
+				this.board.setGrid(newGrid);
+				this.drawNextStage();
+				this.makeInterval();
+			}
+		}, {
+			key: 'drawNextStage',
+			value: function drawNextStage() {
+				if ($('.game-board')) $('.game-board').remove();
+				var grid = this.board.grid;
+				var $ul = $("<ul>");
+				$ul.addClass("group");
+				$ul.addClass("game-board");
+	
+				for (var i = 0; i < grid.length; i++) {
+					for (var j = 0; j < grid[i].length; j++) {
+						$ul.append(grid[i][j].render());
+					}
+				}
+	
+				this.$el.append($ul);
+			}
+		}, {
+			key: 'resetGame',
+			value: function resetGame() {
+				if (window.intervalId) clearInterval(window.intervalId);
+				$('.game-over').text(' ');
+				this.gameSpeedIndex = 1;
+				this.board = new _board2.default();
+				this.score = this.board.score;
+				this.stage = this.board.stage;
+				this.board.setupGrid();
+				this.drawNextStage();
+				this.makeInterval();
+			}
+		}, {
+			key: 'playMove',
 			value: function playMove(pos) {
+				var move = void 0;
+				var anyValids = void 0;
 				if (this.board.isValidMove(pos)) {
-					console.log("move at " + pos);
-					this.board.handleMove(pos);
+					// console.log(`move at ${pos}`);
+					move = this.board.handleMove(pos);
+					if (move === -1) {
+						// clearInterval(window.intervalId);
+						if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
+						// this.makeInterval();
+					}
+					anyValids = this.board.anyValidMoves();
+					if (anyValids === -1) {
+						// console.log('NO VALID MOVES LEFT!');
+						if (this.board.stage < 7) {
+							this.nextStage();
+						}
+					}
 				} else {
-					console.log("invalid!");
+					// clearInterval(window.intervalId);
+					if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
+					// this.makeInterval();
 				}
 			}
 		}]);
@@ -166,7 +334,7 @@
 	
 			this.$el = $el;
 			this.board = new _board2.default();
-			this.game = new _game2.default(this.board);
+			this.game = new _game2.default(this.board, this.$el);
 	
 			this.drawBoard();
 			this.bindEvents();
@@ -187,11 +355,12 @@
 		}, {
 			key: 'drawBoard',
 			value: function drawBoard() {
-				if ($('ul')) $('ul').remove();
+				if ($('.game-board')) $('.game-board').remove();
 	
 				var grid = this.board.grid;
 				var $ul = $("<ul>");
 				$ul.addClass("group");
+				$ul.addClass("game-board");
 	
 				for (var i = 0; i < grid.length; i++) {
 					for (var j = 0; j < grid[i].length; j++) {
@@ -232,14 +401,24 @@
 		function Board() {
 			_classCallCheck(this, Board);
 	
-			this.grid = this.setupGrid();
+			this.stage = 1;
+			this.score = 0;
 			this.deltas = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+	
+			this.grid = this.setupGrid();
 	
 			this.fillRandomSquare = this.fillRandomSquare.bind(this);
 			this.isFullBoard = this.isFullBoard.bind(this);
+			this.anyValidMoves = this.anyValidMoves.bind(this);
+			this.setupGrid = this.setupGrid.bind(this);
 		}
 	
 		_createClass(Board, [{
+			key: 'setGrid',
+			value: function setGrid(grid) {
+				this.grid = grid;
+			}
+		}, {
 			key: 'setupGrid',
 			value: function setupGrid() {
 				var grid = [];
@@ -249,9 +428,9 @@
 					grid.push([]);
 					for (var colIdx = 0; colIdx < 8; colIdx++) {
 						if (getRandomIntInclusive(1, 3) === 1) {
-							$square = new _square2.default([rowIdx, colIdx], true); //make a third of squares blank
+							$square = new _square2.default([rowIdx, colIdx], true, this.stage); //make a third of squares blank
 						} else {
-							$square = new _square2.default([rowIdx, colIdx]);
+							$square = new _square2.default([rowIdx, colIdx], false, this.stage);
 						}
 						grid[rowIdx].push($square);
 					}
@@ -280,7 +459,7 @@
 	
 				while (!filled) {
 					if (this.grid[randomX][randomY].blank) {
-						var randomSquare = new _square2.default([randomX, randomY]);
+						var randomSquare = new _square2.default([randomX, randomY], false, this.stage);
 						this.grid[randomX][randomY] = randomSquare;
 						this.grid[randomX][randomY].fillSquare();
 						filled = true;
@@ -292,6 +471,7 @@
 		}, {
 			key: 'isValidMove',
 			value: function isValidMove(pos) {
+				if (!pos) return false;
 				if (this.grid[pos[0]][pos[1]].blank) {
 					return true;
 				} else {
@@ -301,25 +481,42 @@
 		}, {
 			key: 'handleMove',
 			value: function handleMove(pos) {
+				var real = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+	
+				var foundMatch = void 0;
 				var hitSquares = [];
 	
 				for (var i = 0; i < this.deltas.length; i++) {
 					hitSquares.push(this.nextSolidSquare(pos, this.deltas[i]));
 				}
 				var colorCount = this.sameColorSquares(hitSquares);
-				this.removeSameColorSquares(colorCount);
+				foundMatch = this.removeSameColorSquares(colorCount, real);
+				return foundMatch;
 			}
 		}, {
 			key: 'removeSameColorSquares',
 			value: function removeSameColorSquares(colorCount) {
+				var real = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+	
 				var colors = Object.keys(colorCount);
+				var foundMatch = false;
 				// if a given color had 2 or more hits, make each of those squares blank
 				for (var i = 0; i < colors.length; i++) {
 					if (colorCount[colors[i]].length > 1) {
 						for (var j = 0; j < colorCount[colors[i]].length; j++) {
-							colorCount[colors[i]][j].makeBlank();
+							if (real) {
+								colorCount[colors[i]][j].makeBlank();
+								this.score += 1 * this.stage;
+							}
+							// console.log(`found match for ${colors[i]}`);
+							foundMatch = true;
 						}
 					}
+				}
+				if (foundMatch) {
+					return 1;
+				} else {
+					return -1;
 				}
 			}
 		}, {
@@ -377,6 +574,35 @@
 				}
 				return currentSquare;
 			}
+		}, {
+			key: 'anyValidMoves',
+			value: function anyValidMoves() {
+				var move = void 0;
+				var matches = [];
+				for (var rowIdx = 0; rowIdx < 11; rowIdx++) {
+					for (var colIdx = 0; colIdx < 8; colIdx++) {
+						if (this.grid[rowIdx][colIdx].blank) {
+							move = this.handleMove([rowIdx, colIdx], false);
+							if (move === 1) {
+								matches.push(true);
+							}
+						}
+					}
+				}
+				if ($.inArray(true, matches) !== -1) {
+					// if any handleMove calls found matches, push a true into array
+					return 1; // if there were no match-moves left, there will be no 'trues'
+				} else {
+					return -1;
+				}
+			}
+		}, {
+			key: 'updateStage',
+			value: function updateStage() {
+				if (this.stage < 6) {
+					this.stage += 1;
+				}
+			}
 		}]);
 	
 		return Board;
@@ -408,11 +634,13 @@
 	var Square = function () {
 		function Square(pos) {
 			var blank = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+			var stage = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
 	
 			_classCallCheck(this, Square);
 	
 			this.blank = blank;
 			this.pos = pos;
+			this.stage = stage;
 	
 			this.color = this.randomColor();
 		}
@@ -421,34 +649,102 @@
 			key: 'colors',
 			value: function colors() {
 				return {
-					orange: '(244, 100, 5)',
-					purple: '(152, 88, 174)',
-					dgreen: '(48, 140, 63)',
-					magenta: '(238, 0, 106)',
-					yellow: '(247, 176, 31)',
-					lblue: '(118, 199, 220)',
-					blue: '(59, 140, 205)',
-					lgreen: '(134, 200, 80)'
+					1: {
+						orange: '(244, 100, 5)',
+						purple: '(152, 88, 174)',
+						dgreen: '(48, 140, 63)',
+						magenta: '(238, 0, 106)',
+						yellow: '(247, 176, 31)',
+						lblue: '(118, 199, 220)',
+						blue: '(59, 140, 205)',
+						lgreen: '(134, 200, 80)'
+					},
+	
+					2: {
+						orange2: '(255, 167, 3)',
+						purple2: '(160, 81, 244)',
+						dgreen2: '(20, 166, 129)',
+						magenta2: '(245, 98, 171)',
+						yellow2: '(240, 219, 103)',
+						lblue2: '(58, 201, 199)',
+						blue2: '(96, 156, 252)',
+						lgreen2: '(107, 179, 20)'
+					},
+	
+					3: {
+						fallred: '(207, 21, 21)',
+						mulberry: '(148, 19, 79)',
+						brown: '(105, 43, 29)',
+						paleyellow: '(255, 201, 115)',
+						lightorange: '(255, 145, 0)',
+						orange: '(240, 109, 22)',
+						fallred2: '(245, 153, 125)',
+						brown2: '(181, 72, 0)'
+					},
+	
+					4: {
+						christmas1: '(173, 43, 43)',
+						christmas2: '(235, 19, 19)',
+						christmas3: '(245, 96, 88)',
+						christmas4: '(18, 77, 32)',
+						christmas5: '(109, 168, 124)',
+						christmas6: '(46, 133, 5)',
+						christmas7: '(92, 36, 36)',
+						christmas8: '(143, 143, 143)'
+					},
+	
+					5: {
+						blue1: '(33, 105, 237)',
+						blue2: '(77, 147, 227)',
+						blue3: '(116, 190, 242)',
+						blue4: '(103, 189, 199)',
+						blue5: '(64, 158, 184)',
+						blue6: '(50, 114, 153)',
+						blue7: '(13, 77, 166)',
+						blue8: '(173, 215, 237)'
+					},
+	
+					6: {
+						pink1: '(255, 181, 186)',
+						pink2: '(224, 121, 176)',
+						pink3: '(245, 169, 217)',
+						pink4: '(250, 142, 142)',
+						pink5: '(232, 161, 139)',
+						pink6: '(235, 96, 96)',
+						pink7: '(214, 133, 156)',
+						pink8: '(250, 135, 173)'
+					},
+	
+					7: {
+						neon1: '(235, 50, 21)',
+						neon2: '(255, 0, 136)',
+						neon3: '(255, 5, 255)',
+						neon4: '(131, 21, 235)',
+						neon5: '(36, 105, 255)',
+						neon6: '(0, 255, 34)',
+						neon7: '(0, 242, 255)',
+						neon8: '(255, 255, 0)'
+					},
+	
+					8: {
+						grey1: '(96, 96, 96)',
+						grey2: '(97, 73, 73)',
+						grey3: '(78, 87, 110)',
+						grey4: '(77, 87, 77)',
+						grey5: '(89, 69, 89)',
+						grey6: '(122, 105, 120)',
+						grey7: '(115, 107, 99)',
+						grey8: '(138, 112, 112)'
+					}
 				};
 			}
 		}, {
 			key: 'randomColor',
 			value: function randomColor() {
 				if (this.blank) return '(226, 224, 225)'; // gray
-	
-				var colors = this.colors();
+				var colors = this.colors()[this.stage];
 				var randomKey = shuffle(Object.keys(colors))[0];
 				return colors[randomKey];
-			}
-		}, {
-			key: 'isFullBoard',
-			value: function isFullBoard() {
-				var full = true;
-				for (var i = 0; i < this.grid.length; i++) {
-					if (this.grid[i].blank) {
-						full = false;
-					}
-				}
 			}
 		}, {
 			key: 'fillSquare',
