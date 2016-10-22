@@ -135,6 +135,8 @@
 			this.nextStage = this.nextStage.bind(this);
 			this.drawNextStage = this.drawNextStage.bind(this);
 			this.resetGame = this.resetGame.bind(this);
+			this.unbindEvents = this.unbindEvents.bind(this);
+			this.bindEvents = this.bindEvents.bind(this);
 		}
 	
 		_createClass(Game, [{
@@ -147,11 +149,13 @@
 				$('.pause').on('click', function (e) {
 					e.preventDefault();
 					_this.isPaused = true;
+					_this.unbindEvents();
 				}).bind(this);
 	
 				$('.start').on('click', function (e) {
 					e.preventDefault();
 					_this.isPaused = false;
+					_this.bindEvents();
 				}).bind(this);
 	
 				$('.restart').on('click', function (e) {
@@ -160,6 +164,21 @@
 				}).bind(this);
 	
 				this.makeInterval();
+			}
+		}, {
+			key: 'unbindEvents',
+			value: function unbindEvents() {
+				this.$el.off("click", "li");
+			}
+		}, {
+			key: 'bindEvents',
+			value: function bindEvents() {
+				var _this2 = this;
+	
+				this.$el.on("click", "li", function (event) {
+					var $square = $(event.currentTarget);
+					_this2.makeMove($square);
+				});
 			}
 	
 			// makeInterval() {
@@ -187,24 +206,24 @@
 		}, {
 			key: 'makeInterval',
 			value: function makeInterval() {
-				var _this2 = this;
+				var _this3 = this;
 	
 				var that = this;
 				window.intervalId = setInterval(function () {
-					if (!_this2.isPaused) {
+					if (!_this3.isPaused) {
 						that.time += 20; // that.time should be time in milliseconds
 						if (that.time % that.gameSpeeds[that.gameSpeedIndex] === 0) {
 							that.nextGameState();
 						}
 	
-						if (that.time % 20000 === 0) {
-							//increment speed if it's been 20 seconds
+						if (that.time % 25000 === 0) {
+							//increment speed if it's been 25 seconds
 							if (that.gameSpeedIndex < 30) that.gameSpeedIndex += 1;
 						}
 	
 						that.output.text('Game Speed: ' + that.gameSpeedIndex);
 						that.scoreBoard.text('Score: ' + that.board.score);
-						$('.paused').text('Running');
+						$('.paused').text('Play!');
 					} else {
 						$('.paused').text('Paused');
 					}
