@@ -152,7 +152,6 @@
 				var _this = this;
 	
 				// on interval tell the board to fill a random blank square
-				// window.intervalId = setInterval(this.nextGameState, 1000);
 				$('.pause').on('click', function (e) {
 					e.preventDefault();
 					_this.isPaused = true;
@@ -196,6 +195,10 @@
 				window.intervalId = setInterval(function () {
 					if (!_this3.isPaused) {
 						that.time += 20; // that.time should be time in milliseconds
+	
+						that.scoreBoard.text('Score: ' + that.board.score);
+						$('.paused').text('Play!');
+	
 						if (that.time % that.gameSpeeds[that.gameSpeedIndex] === 0) {
 							that.nextGameState();
 						}
@@ -204,10 +207,7 @@
 							//increment speed if it's been 25 seconds
 							if (that.gameSpeedIndex < 30) that.gameSpeedIndex += 1;
 						}
-	
-						that.output.text('Speed: ' + that.gameSpeedIndex);
-						that.scoreBoard.text('Score: ' + that.board.score);
-						$('.paused').text('Play!');
+						that.output.text('Speed: ' + that.gameSpeedIndex); // Write speed to screen after it might have been incremented
 					} else {
 						$('.paused').text('Paused');
 					}
@@ -217,8 +217,7 @@
 			key: 'nextGameState',
 			value: function nextGameState() {
 				if (this.board.isFullBoard()) {
-					// console.log('game over');
-					$('.game-over').text('Game Over!');
+					$('.paused').text('Game Over!');
 					clearInterval(window.intervalId);
 				} else {
 					this.board.fillRandomSquare();
@@ -276,24 +275,18 @@
 				var move = void 0;
 				var anyValids = void 0;
 				if (this.board.isValidMove(pos)) {
-					// console.log(`move at ${pos}`);
 					move = this.board.handleMove(pos);
 					if (move === -1) {
-						// clearInterval(window.intervalId);
 						if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
-						// this.makeInterval();
 					}
 					anyValids = this.board.anyValidMoves();
 					if (anyValids === -1) {
-						// console.log('NO VALID MOVES LEFT!');
 						if (this.board.stage < 7) {
 							this.nextStage();
 						}
 					}
 				} else {
-					// clearInterval(window.intervalId);
 					if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
-					// this.makeInterval();
 				}
 			}
 		}]);
@@ -727,16 +720,6 @@
 	
 		return array;
 	}
-	
-	// Colors:
-	// 244	100	5 orange
-	// 152	88	174 purple
-	// 48	140	63 dgreen
-	// 238	0	106	magenta/red
-	// 247	176	31	yellow
-	// 118	199	220	lblue
-	// 59	140	205	blue
-	// 134	200	80	lgreen
 
 /***/ }
 /******/ ]);
