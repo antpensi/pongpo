@@ -99,7 +99,7 @@
 			this.isPaused = true;
 			this.time = 0;
 			this.output = $('.time');
-			this.gameSpeedIndex = 1;
+			this.gameSpeedIndex = 0;
 			this.gameSpeeds = {
 				1: 3000,
 				2: 2750,
@@ -187,29 +187,6 @@
 					_this2.makeMove($square);
 				});
 			}
-	
-			// makeInterval() {
-			// 	const that = this;
-			// 	window.intervalId = setInterval( () => {
-			// 		if (!this.isPaused) {
-			// 			that.time += this.gameSpeed[this.gameSpeedIndex] / 1000; // that.time should be time in seconds
-			//
-			// 			if (that.time % 5 === 0) { //increment speed if it's been 5 seconds
-			// 				clearInterval(window.intervalId);
-			// 				if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
-			// 				this.makeInterval();
-			// 			}
-			//
-			// 			that.output.text('Game Speed: ' + that.gameSpeedIndex);
-			// 			that.scoreBoard.text(`Score: ${that.board.score}`);
-			// 			$('.paused').text('Running');
-			// 			that.nextGameState();
-			// 		} else {
-			// 			$('.paused').text('Paused');
-			// 		}
-			// 	}, that.gameSpeeds[that.gameSpeedIndex]);
-			// }
-	
 		}, {
 			key: 'makeInterval',
 			value: function makeInterval() {
@@ -228,7 +205,7 @@
 							if (that.gameSpeedIndex < 30) that.gameSpeedIndex += 1;
 						}
 	
-						that.output.text('Game Speed: ' + that.gameSpeedIndex);
+						that.output.text('Speed: ' + that.gameSpeedIndex);
 						that.scoreBoard.text('Score: ' + that.board.score);
 						$('.paused').text('Play!');
 					} else {
@@ -285,7 +262,7 @@
 			value: function resetGame() {
 				if (window.intervalId) clearInterval(window.intervalId);
 				$('.game-over').text(' ');
-				this.gameSpeedIndex = 1;
+				this.gameSpeedIndex = 0;
 				this.board = new _board2.default();
 				this.score = this.board.score;
 				this.stage = this.board.stage;
