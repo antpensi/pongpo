@@ -60,6 +60,11 @@
 	  var rootEl = $('.pongpo');
 	  var board = new _board2.default();
 	  new _game2.default(board, rootEl);
+	
+	  var toggleButton = $('.toggle-howto');
+	  toggleButton.on("click", function (event) {
+	    $('.how-to-play-div').toggleClass('shown');
+	  });
 	});
 
 /***/ },

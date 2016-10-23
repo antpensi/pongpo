@@ -103,3 +103,16 @@ li > i {
   height: 100px;
   width: 300px;
 }
+
+.how-to-play-div {
+  display: none;
+}
+
+.shown {
+  display: block;
+}
+
+.how-to-play {
+  height: 75%;
+  width: 75%;
+}
