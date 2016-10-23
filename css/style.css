@@ -50,9 +50,15 @@ li {
   transform: scale(.85);
 }
 
+.main {
+  width: 340px;
+  margin: 0 auto;
+}
+
 .controls-list {
 	border: none;
 	margin: 15px auto;
+
 }
 
 .controls-list > li {
@@ -63,8 +69,18 @@ li {
 	cursor: pointer;
 }
 
+
 li > i {
 	vertical-align: middle;
+}
+
+.toggle-howto {
+  background: #fff;
+}
+
+.toggle-howto > i {
+  font-size: 20px;
+  background: #fff;
 }
 
 .restart {
@@ -113,6 +129,6 @@ li > i {
 }
 
 .how-to-play {
-  height: 75%;
-  width: 75%;
+  height: 100%;
+  width: 100%;
 }
