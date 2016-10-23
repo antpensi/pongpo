@@ -98,3 +98,8 @@ li > i {
 	font-size: 24px;
 	margin: 5px;
 }
+
+.logo {
+  height: 100px;
+  width: 300px;
+}
