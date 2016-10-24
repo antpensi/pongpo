@@ -130,7 +130,10 @@
 				27: 150,
 				28: 100,
 				29: 50,
-				30: 20
+				30: 20,
+				31: 10,
+				32: 5,
+				33: 1
 			};
 	
 			this.start = this.start.bind(this);
@@ -205,7 +208,7 @@
 	
 						if (that.time % 25000 === 0) {
 							//increment speed if it's been 25 seconds
-							if (that.gameSpeedIndex < 30) that.gameSpeedIndex += 1;
+							if (that.gameSpeedIndex < 33) that.gameSpeedIndex += 1;
 						}
 						that.output.text('Speed: ' + that.gameSpeedIndex); // Write speed to screen after it might have been incremented
 					} else {
@@ -277,7 +280,7 @@
 				if (this.board.isValidMove(pos)) {
 					move = this.board.handleMove(pos);
 					if (move === -1) {
-						if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
+						if (this.gameSpeedIndex < 33) this.gameSpeedIndex += 1;
 					}
 					anyValids = this.board.anyValidMoves();
 					if (anyValids === -1) {
@@ -286,7 +289,7 @@
 						}
 					}
 				} else {
-					if (this.gameSpeedIndex < 30) this.gameSpeedIndex += 1;
+					if (this.gameSpeedIndex < 33) this.gameSpeedIndex += 1;
 				}
 			}
 		}]);
