@@ -44,13 +44,13 @@ sameColorSquares(squares) {
   for (let i = 0; i < squares.length; i++) {
     if (!squares[i]) continue;
 
-      if (colorCount[squares[i].color]) {
-        colorCount[squares[i].color].push(squares[i]);
-        } else {
-          colorCount[squares[i].color] = [squares[i]];
-        }
+    if (colorCount[squares[i].color]) {
+      colorCount[squares[i].color].push(squares[i]);
+      } else {
+        colorCount[squares[i].color] = [squares[i]];
       }
-      return colorCount;
+    }
+  return colorCount;
 }
 
 removeSameColorSquares(colorCount, real=true) {
