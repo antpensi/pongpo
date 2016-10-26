@@ -95,12 +95,12 @@ li > i {
 	background: #fff;
 }
 
-.display-list {
+.links, .display-list {
   border: none;
   margin-bottom: 5px;
 }
 
-.time, .scoreboard, .paused, .game-over, .display-list > li {
+.time, .scoreboard, .paused, .game-over, .display-list > li, .links > li {
   float: left;
   width: auto;
   height: auto;
