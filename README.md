@@ -1,75 +1,80 @@
-## Pongpo
+# Pongpo
 
-### Background
+[Live](http://antpensi.com/pongpo)
 
-Pongpo is a simple but addictive game where you compete against time for a high score. To score points, the player must click on an open intersection of two squares of the same color. New squares are added as time goes on, and the rate at which new squares are added also increases. Clicking an incorrect intersection will cause a jump in speed.
-
-
-### Functionality & MVP  
-
-With Pongpo, users will be able to:
-
-- [ ] Start, pause, and reset the game
-- [ ] Select open intersections to clear blocks and score points
-- [ ] Cause a difficulty spike when clicking an incorrect square
+Pongpo is a simple but addictive game where you compete against time for a high score, and see what stage you can reach. To score points, the player must click on an open intersection of two squares of the same color. New squares are added as time goes on, and the rate at which new squares are added also increases. Clicking an incorrect intersection will cause a jump in speed.
 
 
-In addition, this project will include:
+## Gameplay
 
-- [ ] An About modal describing the background and rules of the game
-- [ ] A production README
+Pongpo starts with a partially filled grid of eight different colors.
 
-### Wireframes
+<img src="./docs/pongpoStage1Start.png" height="500"/>
 
-This app will consist of a single screen with game board, game controls, and nav links to the Github, my LinkedIn,
-and the About modal.  Game controls will include Start, Pause, and Reset contained in a header, as well as the current score and number of cleared pairs.
+To earn points and progress through the stages, you must click a blank square that is at the intersection of two like-colored squares.
 
-Beneath the header the game-grid will be displayed.
+<img src="./docs/pongpoStage2HalfClear.png" height="500"/>
 
-![wireframe](https://github.com/antpensi/pongpo/blob/master/docs/Pongpo.jpg)
+Each stage has a unique color scheme.
 
-### Architecture and Technologies
+<img src="./docs/pongpoStage3Start.png" height="500" />
 
+Some more challenging than others. The game ends when the grid is completely filled.
 
-This project will be implemented with the following technologies:
-
-- Vanilla JavaScript and `jQuery` for overall structure and game logic,
-- Webpack to bundle and serve up the various scripts.
-
-In addition to the webpack entry file, there will be three scripts involved in this project:
-
-`board.js`: this script will handle the logic for creating and updating the necessary `HTML` elements and rendering them to the DOM.
-
-`game.js`: this script will handle the logic behind the scenes. Logic for determining the intersections for squares will live here. Intervals for speeding up, and interval acceleration will be calculated.
-
-`square.js`: this lightweight script will house the constructor and update functions for the `square` objects. Color will be randomized from a preset list.
-
-### Implementation Timeline
-
-**Day 1**: Setup all necessary Node modules, including getting webpack up and running.  Create `webpack.config.js` as well as `package.json`.  Write a basic entry file and the bare bones of all 3 scripts outlined above. Goals for the day:
-
-- Get a green bundle with `webpack`
-
-**Day 2**: First, build out the `square` object to connect to the `Board` object.  Then, use `board.js` to create and render at least the square grid. Build ability to populate board on interval. Goals for the day:
-
-- Complete the `square.js` module (constructor, update functions)
-- Render a square grid. Make squares clickable and trigger callbacks (although logic may not be implemented yet)
-
-**Day 3**: Create the logic backend.  Build out modular functions for handling clicks on the grid. Correct clicks must clear the squares and update the score, incorrect clicks will reduce interval inbetween new blocks.  Incorporate the logic into the `Board.js` rendering.  Goals for the day:
-
-- Have a functional grid on the frontend that correctly handles clearing squares.
-- Have functional incrementing score and interval generating squares.
+<img src="./docs/pongpoStage5GameOver.png" height="500" />
 
 
-**Day 4**: Style the frontend, making it polished and professional.  Goals for the day:
+## Implementation
 
-- Create controls for game pause, start, reset
-- Have a styled game, nice looking header and title
+Pongpo is built with vanilla JavaScript and jQuery. Three classes control all the logic and rendering, `Game`, `Board`, and `Square`.
 
+`Game` is in charge of the player's score, the game's speed, rendering the grid, and telling the board to handle moves or switch palettes.
 
-### Bonus features
+`Board` stores the grid as a variable of `Square` objects. It is in charge of figuring out what squares need to be removed, as well as if there are any valid moves to be made.
 
- Some anticipated updates are:
+`Square` handles rendering list elements with the correct colors for a given stage.
 
-- [ ] Add stages after all possible square pairs are cleared at a given time. New stage would contain a different 'color palette'. Each stage would be harder to distinguish colors.
-- [ ] Add multiple difficulties for starting states (perhaps start on a later stage, or at a faster time)
+## Interesting Snippets
+
+The bulk of the game's logic lies in figuring out what squares were hit by a player's move, and what needs to be removed. Once the squares that are hit is calculated, that can be passed through to helper functions that do the computation.
+
+```ruby
+sameColorSquares(squares) {
+  let colorCount = {};
+  for (let i = 0; i < squares.length; i++) {
+    if (!squares[i]) continue;
+
+      if (colorCount[squares[i].color]) {
+        colorCount[squares[i].color].push(squares[i]);
+        } else {
+          colorCount[squares[i].color] = [squares[i]];
+        }
+      }
+      return colorCount;
+}
+
+removeSameColorSquares(colorCount, real=true) {
+  const colors = Object.keys(colorCount);
+  let foundMatch = false;
+  for (let i = 0; i < colors.length; i++) {
+    if (colorCount[colors[i]].length > 1) {
+      for (let j = 0; j < colorCount[colors[i]].length; j++) {
+        if (real) {
+          colorCount[colors[i]][j].makeBlank();
+          this.score += (1 * this.stage);
+        }
+        foundMatch = true;
+      }
+    }
+  }
+  if (foundMatch) {
+    return 1;
+  } else {
+    return -1;
+  }
+}
+```
+
+`sameColorSquares` is responsible for returning a hash with keys of colors pointing to an array of squares of that color.
+
+`removeSameColorSquares` can then take this hash and look at each values length. If it's greater than one, those squares need to be removed (`.makeBlank()`). This function returns 1 or -1 based on whether or not matches were present. This is utilized in other parts of the game when determining if valid plays remain on the grid.
