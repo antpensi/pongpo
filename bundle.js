@@ -170,6 +170,7 @@
 				$('.restart').on('click', function (e) {
 					e.preventDefault();
 					_this.resetGame();
+					_this.unbindEvents();
 				}).bind(this);
 	
 				this.makeInterval();
@@ -199,7 +200,6 @@
 					if (!_this3.isPaused) {
 						that.time += 20; // that.time should be time in milliseconds
 	
-						that.scoreBoard.text('Score: ' + that.board.score);
 						$('.paused').text('Play!');
 	
 						if (that.time % that.gameSpeeds[that.gameSpeedIndex] === 0) {
@@ -210,10 +210,11 @@
 							//increment speed if it's been 25 seconds
 							if (that.gameSpeedIndex < 33) that.gameSpeedIndex += 1;
 						}
-						that.output.text('Speed: ' + that.gameSpeedIndex); // Write speed to screen after it might have been incremented
 					} else {
 						$('.paused').text('Paused');
 					}
+					that.scoreBoard.text('Score: ' + that.board.score);
+					that.output.text('Speed: ' + that.gameSpeedIndex);
 				}, 20); // 50 refreshes a second
 			}
 		}, {
@@ -264,13 +265,15 @@
 			value: function resetGame() {
 				if (window.intervalId) clearInterval(window.intervalId);
 				$('.game-over').text(' ');
-				this.gameSpeedIndex = 0;
 				this.board = new _board2.default();
 				this.score = this.board.score;
 				this.stage = this.board.stage;
+				this.gameSpeedIndex = 0;
+				this.isPaused = true;
 				this.board.setupGrid();
 				this.drawNextStage();
 				this.makeInterval();
+				this.unbindEvents();
 			}
 		}, {
 			key: 'playMove',
