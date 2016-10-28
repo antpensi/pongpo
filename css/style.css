@@ -130,6 +130,9 @@ li > i {
 }
 
 .game-over-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 75px;
   width: 200px;
   border-radius: 12px;
@@ -138,12 +141,9 @@ li > i {
   top: 25%;
   right: 70px;
   box-shadow: 0 0 10px black;
+  white-space: pre-wrap;
 }
 
-/*.game-over-transition {
-  transform: translateX(200px);
-  transform: translateY(200px);
-}*/
 
 .game-board {
   position: relative;
