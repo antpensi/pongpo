@@ -42,6 +42,8 @@ li {
   background-color: #ccc;
   cursor: pointer;
 	margin: 1px;
+  -webkit-transform: scale(1);
+  transform: scale(1);
 }
 
 .shrink:hover {
@@ -202,4 +204,19 @@ li > i {
 	100% {
 		-webkit-transform: translateY(0%);
 	}
+}
+
+.square-tile {
+  -webkit-transition: background-color ease-in .25s;
+  -moz-transition: background-color  ease-in .25s;
+  -o-transition: background-color  ease-in .25s;
+  transition: background-color  ease-in .25s;
+}
+
+/* Radial Out */
+.hvr-radial-out {
+  -webkit-transition: background-color ease-out .25s;
+  -moz-transition: background-color  ease-out .25s;
+  -o-transition: background-color  ease-out .25s;
+  transition: background-color  ease-out .25s;
 }
