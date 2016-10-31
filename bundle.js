@@ -681,6 +681,7 @@
 			value: function fillSquare() {
 				var $li = $(document.getElementById(this.pos));
 				$li.css('background-color', 'rgb' + this.color);
+				$li.removeClass('hvr-radial-out');
 			}
 		}, {
 			key: 'makeBlank',
@@ -688,7 +689,7 @@
 				this.blank = true;
 				var $li = $(document.getElementById(this.pos));
 				$li.css('background-color', 'rgb(226, 224, 225)');
-				$li.addClass('blank');
+				$li.addClass('blank hvr-radial-out');
 			}
 		}, {
 			key: 'render',
@@ -698,6 +699,7 @@
 				if (this.blank) {
 					$li.addClass('blank');
 				}
+				$li.addClass('square-tile');
 				$li.data("pos", this.pos);
 				$li.attr('id', this.pos);
 				return $li;
