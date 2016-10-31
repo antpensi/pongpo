@@ -38,7 +38,7 @@ Pongpo is built with vanilla JavaScript and jQuery. Three classes control all th
 
 The bulk of the game's logic lies in figuring out what squares were hit by a player's move, and what needs to be removed. Once the squares that are hit is calculated, that can be passed through to helper functions that do the computation.
 
-```ruby
+```javascript
 sameColorSquares(squares) {
   let colorCount = {};
   for (let i = 0; i < squares.length; i++) {
