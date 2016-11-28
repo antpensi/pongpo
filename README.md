@@ -7,7 +7,7 @@ Pongpo is a simple but addictive game where you compete against time for a high 
 
 ## Gameplay
 
-Pongpo starts with a partially filled grid of eight different colors.
+Pongpo starts with a partially filled grid of eight different colors/shades.
 
 <img src="./docs/pongpoStage1Start.png" height="500"/>
 
