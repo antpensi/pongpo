@@ -1,7 +1,5 @@
 # Pongpo
 
-[Live](http://antpensi.com/pongpo)
-
 Pongpo is a simple but addictive game where you compete against time for a high score, and see what stage you can reach. To score points, the player must click on an open intersection of two squares of the same color. New squares are added as time goes on, and the rate at which new squares are added also increases. Clicking an incorrect intersection will cause a jump in speed.
 
 
